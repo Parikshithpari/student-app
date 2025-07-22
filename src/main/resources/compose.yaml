@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: school
+      MYSQL_USER: demo-user
+      MYSQL_PASSWORD: password
+    networks:
+      - sql-network
+
+  backend:
+    build: .
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://sql_db:3306/school
+      SPRING_DATASOURCE_USERNAME: demo-user
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "8080:8080"
+    networks:
+      - sql-network
+
+networks:
+  sql-network:
